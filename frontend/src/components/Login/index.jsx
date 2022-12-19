@@ -15,7 +15,7 @@ export const Login = () => {
 
     const handleSignIn = async () => {
         const body = {
-            userName,
+            username: userName,
             password
         }
 

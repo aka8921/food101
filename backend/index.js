@@ -15,8 +15,35 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.post('/api/sign-in', (req, res) => {
-    console.log(req.body)
+app.post('/api/sign-in', async (req, res) => {
+    const {username, password} = req.body
+    console.log(username)
+    if(!username || typeof username !== 'string'){
+        return res.json({status: "error", message: "Invalid Username"})
+    }
+
+    if(!username || password.length < 5){
+        return res.json({status: "error", message: "Password Too Short"})
+    }
+    try{
+        user = await User.findOne({
+            username
+        }).lean()
+        if(!user){
+            return res.send({status: "error", message: "Invalid Username"})
+        }
+        if(await bcrypt.compare(password, user.password)){
+            return res.send({status: "ok", message: "user verified"})
+        }
+        else{
+            return res.send({status: "error", message: "Invalid Password"})
+        }
+        }
+        catch(error){
+            console.log(error)
+            return res.json({status: "error"})
+        } 
+
     res.send({status: "ok"})
   })
 
