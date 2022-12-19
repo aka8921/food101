@@ -34,7 +34,7 @@ export const Login = () => {
 
     const handleSignUp = async () => {
         const body = {
-            userName,
+            username: userName,
             password
         }
 
