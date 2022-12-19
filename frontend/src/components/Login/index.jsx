@@ -13,22 +13,42 @@ export const Login = () => {
         setIsSignUp(!isSignUp)
     }
 
-    const handleSignIn = () => {
+    const handleSignIn = async () => {
         const body = {
             userName,
             password
         }
 
-        console.log("sign In : ", body)
+        const response = await fetch('http://localhost:3000/api/sign-in', {
+            method: 'POST',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        const content = await response.json();
+
+        console.log("sign In : ", content)
     }
 
-    const handleSignUp = () => {
+    const handleSignUp = async () => {
         const body = {
             userName,
             password
         }
 
-        console.log("sign Up : ", body)
+        const response = await fetch('http://localhost:3000/api/sign-up', {
+            method: 'POST',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        const content = await response.json();
+
+        console.log("sign Up : ", content)
     }
 
     return(
