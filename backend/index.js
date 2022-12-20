@@ -4,7 +4,10 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const User = require('./model/user')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+
 const PORT = 3000
+const JWT_TOKEN = "kahsdfiyasbcjhsad%^$^^%&^#$JHBjdkjabfs^%$^&%&*JBHJGJH"
 
 mongoose.connect('mongodb://localhost/food101')
 
@@ -30,13 +33,15 @@ app.post('/api/sign-in', async (req, res) => {
             username
         }).lean()
         if(!user){
-            return res.send({status: "error", message: "Invalid Username"})
+            return res.send({status: "error", message: "Invalid Username / Passowrd"})
         }
+
         if(await bcrypt.compare(password, user.password)){
-            return res.send({status: "ok", message: "user verified"})
+            const token = jwt.sign({id: user._id, username: user.username}, JWT_TOKEN)
+            return res.send({status: "ok", body: token, message: "user verified"})
         }
         else{
-            return res.send({status: "error", message: "Invalid Password"})
+            return res.send({status: "error", message: "Invalid Username / Passowrd"})
         }
         }
         catch(error){

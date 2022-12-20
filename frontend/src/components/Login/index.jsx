@@ -29,7 +29,13 @@ export const Login = () => {
         });
         const content = await response.json();
 
-        console.log("sign In : ", content)
+        if(content.status === "ok"){
+            console.log("Token Recieved : ", content.body)
+            await localStorage.setItem("token", content.body)
+        }
+        else{
+            alert(`Error: ${content.message}`)
+        }
     }
 
     const handleSignUp = async () => {
