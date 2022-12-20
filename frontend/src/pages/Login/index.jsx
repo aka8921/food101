@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Logo from '../../assets/logo.png'
 import Arrow from '../../assets/arrow.svg'
 
-import {GradientButton} from '../GradientButton'
+import {GradientButton} from '../../components/GradientButton'
 
 export const Login = () => {
     const [isSignUp, setIsSignUp] = useState(0)
