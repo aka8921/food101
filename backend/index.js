@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 app.post('/api/sign-in', async (req, res) => {
     const {username, password} = req.body
-    console.log(username)
+    console.log(username, " Signing in...")
     if(!username || typeof username !== 'string'){
         return res.json({status: "error", message: "Invalid Username"})
     }
