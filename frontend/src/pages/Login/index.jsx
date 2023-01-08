@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import Logo from '../../assets/logo.png'
 import Arrow from '../../assets/arrow.svg'
-
+import { useNavigate } from "react-router-dom";
 import {GradientButton} from '../../components/GradientButton'
 
 export const Login = () => {
     const [isSignUp, setIsSignUp] = useState(0)
     const [userName, setUserName] = useState("test_user")
     const [password, setPassword] = useState("test_pwd")
+    const navigate = useNavigate();
 
     const toggleFormState = () => {
         setIsSignUp(!isSignUp)
@@ -30,8 +31,9 @@ export const Login = () => {
         const content = await response.json();
 
         if(content.status === "ok"){
-            console.log("Token Recieved : ", content.body)
-            await localStorage.setItem("token", content.body)
+            // console.log("Token Recieved : ", content.body)
+            localStorage.setItem("token", content.body)
+            navigate("/")
         }
         else{
             alert(`Error: ${content.message}`)
