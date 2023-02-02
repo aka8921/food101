@@ -1,20 +1,19 @@
 import { useNavigate, Link } from "react-router-dom";
+import { MainHeader } from "../components/MainHeader";
+import { MealCard } from "../components/MealCard";
+import { Menu } from "../components/Menu";
+import { PreviousOrders } from "../components/PreviousOrders";
+import { RecentBookings } from "../components/RecentBookings";
 
 
 export const Home = () => {
-    const navigate = useNavigate();
-    const handleLogout = ()=> {
-        console.log("Logging you out... ")
-        localStorage.clear()
-        navigate("/login")
-    }
     return(
-        <div>
-            <div className="cursor-pointer w-40 flex align-center justify-center rounded-lg py-2 self-center text-white bg-red-300" onClick={handleLogout}>
-                Logout
-            </div>
-            Home
-            <Link to="/test">Test</Link>
+        <div className="flex flex-col p-5">
+            <MainHeader />
+            {/* <MealCard />
+            <RecentBookings />
+            <Menu />
+            <PreviousOrders /> */}
         </div>
     )
 }
