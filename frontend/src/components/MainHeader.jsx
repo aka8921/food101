@@ -1,6 +1,6 @@
 export const MainHeader = () => {
     return (
-    <div className="flex justify-between items-end">
+    <div className="flex justify-between items-end my-4">
         <div className="flex flex-col">
             <div className="text-md text-slate-500 font-light opacity-50">Welcome Back !</div>
             <div className="text-3xl font-bold">Archana TK</div>

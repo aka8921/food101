@@ -8,12 +8,12 @@ import { RecentBookings } from "../components/RecentBookings";
 
 export const Home = () => {
     return(
-        <div className="flex flex-col p-5">
+        <div className="flex flex-col py-5 px-6">
             <MainHeader />
-            {/* <MealCard />
-            <RecentBookings />
-            <Menu />
-            <PreviousOrders /> */}
+            <MealCard />
+            {/* <RecentBookings /> */}
+            {/* <Menu /> */}
+            {/* <PreviousOrders /> */}
         </div>
     )
 }
