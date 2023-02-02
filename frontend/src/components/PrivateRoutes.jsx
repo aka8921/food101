@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from 'react-router-dom'
+import { useState } from 'react';
 
 export const PrivateRoutes = () => {
-    const tokenLocal = localStorage.getItem('token');
+    const [tokenLocal, setTokenLocal] = useState(localStorage.getItem('token'));
 return (
     <>
-    Token: {tokenLocal ? "true" : "false"}
     {tokenLocal ? <Outlet/> : <Navigate to='/login'/>}
     </>
   )
