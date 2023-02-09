@@ -17,9 +17,9 @@ export const BottomNav = () => {
                 </div>
             </Link>
             
-            <Link to={"/recharge"}>
+            <Link to={"/transactions"}>
                 <div className="flex items-center bg-slate-100 hover:bg-slate-200 h-[30px] px-2 rounded-lg">
-                    <div className="text-sm">Recharge History</div>
+                    <div className="text-sm">Transaction History</div>
                     <div className="ml-auto"><img src={arrow} alt="Arrow-right" className='w-[15px] mt-[2px]' /> </div>
                 </div>
             </Link>

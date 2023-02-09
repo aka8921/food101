@@ -64,14 +64,14 @@ export const Menu = () => {
                         className="flex items-center self-stretch w-[25px] justify-center"
                         onClick={() => {handleCartAdd(item._id)}}
                         >
-                            <img src={plus} alt="" className="w-[20px]" />
+                            <img src={plus} alt="" className="w-[15px]" />
                         </div>
-                        <div className="">100</div>
+                        <div className="">0</div>
                         <div 
                         className="flex items-center self-stretch w-[25px] justify-center"
                         onClick={() => {handleCartRemove(item._id)}}
                         >
-                            <img src={minus} alt="" className="w-[20px]" />
+                            <img src={minus} alt="" className="w-[15px]" />
                         </div>
                     </div>
                 </div>
