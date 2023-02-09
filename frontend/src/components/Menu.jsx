@@ -85,7 +85,7 @@ export const Menu = () => {
     return (
     <div className="flex flex-col my-2">
         <div className="font-bold text-lg mb-3">Recent Bookings</div>
-        <div className="flex gap-5 overflow-scroll">
+        <div className="flex gap-5 overflow-auto">
         {menuItems}
         </div>
     </div>

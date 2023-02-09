@@ -3,6 +3,7 @@ import { PrivateRoutes } from './components/PrivateRoutes';
 import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Logout } from './pages/Logout';
+import { NotFound } from './pages/NotFound';
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
           </Route>
           <Route path='/login' element={<Login/>}/>
           <Route path='/logout' element={<Logout/>}/>
-          <Route path="*" element={<p>404! <br /> Kourachu chor edukkatte</p>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </div>
