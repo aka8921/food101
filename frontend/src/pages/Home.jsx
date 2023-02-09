@@ -11,7 +11,7 @@ export const Home = () => {
         <div className="flex flex-col py-5 px-6">
             <MainHeader />
             <MealCard />
-            {/* <RecentBookings /> */}
+            <RecentBookings />
             {/* <Menu /> */}
             {/* <PreviousOrders /> */}
         </div>
