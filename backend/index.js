@@ -53,7 +53,7 @@ app.post('/api/sign-in', async (req, res) => {
   })
 
 app.post('/api/sign-up', async (req, res) => {
-  const {username, password} = req.body
+  const {username, password, firstName, lastName, userType} = req.body
   if(!username || typeof username !== 'string'){
     return res.json({status: "error", message: "Invalid Username"})
   }
@@ -65,7 +65,10 @@ app.post('/api/sign-up', async (req, res) => {
   try{
     response = await User.create({
         username,
-        password: hashedPassword
+        password: hashedPassword,
+        firstName,
+        lastName,
+        userType
     })
     console.log("User Created successfully: ",response)
   }
