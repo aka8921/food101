@@ -12,7 +12,7 @@ export const Home = () => {
             <MainHeader />
             <MealCard />
             <RecentBookings />
-            {/* <Menu /> */}
+            <Menu />
             {/* <PreviousOrders /> */}
         </div>
     )
