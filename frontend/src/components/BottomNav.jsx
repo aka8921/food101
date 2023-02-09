@@ -9,7 +9,7 @@ export const BottomNav = () => {
         navigate("/login")
     }
     return (
-        <div className="flex flex-col items-stretch mt-3 gap-2">
+        <div className="flex flex-col items-stretch mt-5 gap-2">
             <Link to={"/orders"}>
                 <div className="flex items-center bg-slate-100 hover:bg-slate-200 h-[30px] px-2 rounded-lg">
                     <div className="text-sm">Order History</div>

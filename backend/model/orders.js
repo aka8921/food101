@@ -2,20 +2,27 @@ const mongoose = require('mongoose')
 
 
 const OrderSchema = new mongoose.Schema({
-        itemId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Menu",
-          required: true
-        },
         user: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
           required: true
         },
-        count: {
-            type: Number, 
-            required: true ,
-            default: 1 
+        items: [
+          {
+            item: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "Menu",
+              required: true
+            },
+            quantity: {
+              type: Number,
+              required: true
+            }
+          }
+        ],
+        total: {
+          type: Number,
+          required: true
         },
         createdAt: {
             type: Date,

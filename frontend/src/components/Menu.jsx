@@ -64,14 +64,14 @@ export const Menu = () => {
                         className="flex items-center self-stretch w-[25px] justify-center"
                         onClick={() => {handleCartAdd(item._id)}}
                         >
-                            <img src={plus} alt="" className="w-[15px]" />
+                            <img src={plus} alt="" className="w-[12px]" />
                         </div>
                         <div className="">0</div>
                         <div 
                         className="flex items-center self-stretch w-[25px] justify-center"
                         onClick={() => {handleCartRemove(item._id)}}
                         >
-                            <img src={minus} alt="" className="w-[15px]" />
+                            <img src={minus} alt="" className="w-[12px]" />
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ export const Menu = () => {
     return (
     <div className="flex flex-col my-2">
         <div className="font-bold text-lg mb-3">Recent Bookings</div>
-        <div className="flex gap-5 overflow-auto">
+        <div className="flex gap-5 overflow-auto -mx-6 px-6 no-scrollbar">
         {menuItems}
         </div>
     </div>
