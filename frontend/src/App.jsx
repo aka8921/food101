@@ -8,8 +8,8 @@ import { Transactions } from './pages/Transactions';
 
 function App() {
   return (
-    <div className="flex justify-center items-stretch w-screen h-screen">
-      <div className="max-w-[800px] w-screen h-full overflow-hidden">
+    <div className="flex justify-center items-stretch w-screen h-screen bg-blue-100">
+      <div className="max-w-[400px] w-screen h-full bg-white overflow-hidden shadow-lg">
         <Routes>
           <Route element={<PrivateRoutes/>}>
             <Route path='/' element={<Home/>}/>
