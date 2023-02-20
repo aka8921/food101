@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 
-const OrderSchema = new mongoose.Schema({
+const MenuSchema = new mongoose.Schema({
 
         name: {
             type: String, 
@@ -23,6 +23,6 @@ const OrderSchema = new mongoose.Schema({
     {collection: "orders"}
 )
 
-const model = mongoose.model("OrderSchema", OrderSchema)
+const model = mongoose.model("MenuSchema", MenuSchema)
 
 module.exports = model
