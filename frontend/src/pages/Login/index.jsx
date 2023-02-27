@@ -5,8 +5,8 @@ import { useNavigate, Link } from "react-router-dom";
 import {GradientButton} from '../../components/GradientButton'
 
 export const Login = () => {
-    const [userName, setUserName] = useState("test_user")
-    const [password, setPassword] = useState("test_pwd")
+    const [userName, setUserName] = useState("")
+    const [password, setPassword] = useState("")
     const navigate = useNavigate();
 
     const handleSignIn = async () => {
@@ -57,10 +57,10 @@ export const Login = () => {
                     <input type="password" value={password} onChange={(e) => {setPassword(e.target.value)}}  className='self-stretch outline-none my-1'/>
                 </div>
             </div>
-            <div className="flex text-xs gap-1">
+            {/* <div className="flex text-xs gap-1">
                 <div className='text-slate-500'>New user?</div>
                 <Link to={"/sign-up"} className="font-bold">Sign Up</Link>
-            </div>
+            </div> */}
             {/* Button */}
                     <GradientButton
                     className="mt-auto self-stretch gap-2 text-white flex items-center justify-center m-5"
