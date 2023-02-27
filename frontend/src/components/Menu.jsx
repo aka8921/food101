@@ -1,46 +1,38 @@
 import plus from "../assets/plus.svg"
 import minus from "../assets/minus.svg"
+import { useEffect, useState } from "react"
 
 export const Menu = () => {
-    const menu = [
-        {
-            _id: "1234",
-            name: "Veg Biriyani",
-            price: "$50.00",
-            img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-        },
-        {
-            _id: "1432",
-            name: "Samosa",
-            price: "$30.00",
-            img: "https://www.indianhealthyrecipes.com/wp-content/uploads/2019/11/samosa-recipe.jpg"
-        },
-        {
-            _id: "1234",
-            name: "Veg Biriyani",
-            price: "$50.00",
-            img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-        },
-        {
-            _id: "1432",
-            name: "Samosa",
-            price: "$30.00",
-            img: "https://www.indianhealthyrecipes.com/wp-content/uploads/2019/11/samosa-recipe.jpg"
-        },
-        {
-            _id: "1234",
-            name: "Veg Biriyani",
-            price: "$50.00",
-            img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-        },
-        {
-            _id: "1432",
-            name: "Samosa",
-            price: "$30.00",
-            img: "https://www.indianhealthyrecipes.com/wp-content/uploads/2019/11/samosa-recipe.jpg"
-        }
-        
-    ]
+
+    const [menu, setMenu] = useState([])
+
+    const fetchMenuItems = () => {
+        const jwt_token = localStorage.getItem('token')
+        console.log("fuction: fetchUserDetails")
+
+        fetch('http://localhost:3000/api/menu', {
+            headers: {
+              'Authorization': `Bearer ${jwt_token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(res => {
+            if (!res.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return res.json();
+          })
+          .then(data => {
+            setMenu(data)
+          })
+          .catch(error => {
+            console.error('There was an error:', error);
+          });
+    }
+
+    useEffect(()=> {
+        fetchMenuItems()
+    }, [])
 
     const handleCartAdd = (id) => {
         alert(`Adding ${id} to Cart`)
@@ -56,22 +48,22 @@ export const Menu = () => {
             <div className="flex flex-col items-center shrink-0" key={i}>
                 <div className="flex flex-col items-center relative">
                     <div className="bg-red-300 w-[70px] relative h-[70px] rounded-full overflow-hidden">
-                        <img src={item.img} alt={item.name} className="w-full h-full object-cover"/>
+                        <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover"/>
                     </div>
                     <div className="w-[80px] overflow-hidden h-[25px] flex justify-between items-center rounded-full bg-white mt-[-10px] relative z-50 font-semibold cursor-pointer text-[10px] shadow-lg mb-1"
                     >
                         <div 
                         className="flex items-center self-stretch w-[25px] justify-center"
-                        onClick={() => {handleCartAdd(item._id)}}
+                        onClick={() => {handleCartRemove(item._id)}}
                         >
-                            <img src={plus} alt="" className="w-[12px]" />
+                            <img src={minus} alt="" className="w-[12px]" />
                         </div>
                         <div className="">0</div>
                         <div 
                         className="flex items-center self-stretch w-[25px] justify-center"
-                        onClick={() => {handleCartRemove(item._id)}}
+                        onClick={() => {handleCartAdd(item._id)}}
                         >
-                            <img src={minus} alt="" className="w-[12px]" />
+                            <img src={plus} alt="" className="w-[12px]" />
                         </div>
                     </div>
                 </div>

@@ -27,7 +27,7 @@ export const Home = () => {
             return res.json();
           })
           .then(data => {
-            console.log(data);
+            // console.log(data);
             setUserDetails(data.user)
           })
           .catch(error => {
