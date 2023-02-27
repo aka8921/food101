@@ -26,7 +26,7 @@ function isLoggedIn(req, res, next) {
     return res.status(401).json({ message: 'No token provided.' });
   }
   const token = authHeader.split(' ')[1];
-  console.log(token)
+  // console.log(token)
   // Verify the token
   jwt.verify(token, JWT_TOKEN, (err, decoded) => {
     if (err) {
@@ -111,7 +111,7 @@ app.get('/api/user', isLoggedIn, (req, res) => {
   // If the middleware is successful, the user ID will be available on the request object
   const userId = req.userId;
   const username = req.username;
-  console.log("userId", userId)
+  // console.log("userId", userId)
   
   User.findOne({ username: username }, (err, user) => {
     if (err) {
@@ -135,10 +135,30 @@ app.get('/api/user', isLoggedIn, (req, res) => {
       userType: user.userType
     };
 
-    console.log(userObject)
+    // console.log(userObject)
 
     // Send a response with the user object
     res.status(200).json({ user: userObject });
+    });
+})
+
+app.put('/api/recharge', isLoggedIn, (req, res) => {
+  const userId = req.userId;
+  const username = req.username;
+  const rechargeAmount = req.body.rechargeAmount
+
+  User.findOneAndUpdate(
+    { username }, 
+    { $inc: { 'mealCard': rechargeAmount } }, 
+    { new: true }
+  )
+    .then(updatedUser => {
+      console.log(updatedUser);
+      res.json({status: "ok"})
+    })
+    .catch(error => {
+      console.error(error);
+      res.json({status: "error"})
     });
 })
 
