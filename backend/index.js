@@ -107,6 +107,36 @@ app.post('/api/sign-up', async (req, res) => {
   res.json({status: "ok"})
 })
 
+app.post('/api/menu', isLoggedIn, async (req, res)=>{
+  const {name, imageUrl, price, profit} = req.body
+  try{
+    response = await Menu.create({
+        name,
+        imageUrl,
+        price,
+        profit
+    })
+    console.log("Item Added successfully: ",response)
+  }
+  catch(error){
+    if (error.code === 11000)
+        return res.json({status: "error", message: "Item already in use"})
+    throw error
+  } 
+  res.json({status: "ok"})
+})
+
+app.get('/api/menu', isLoggedIn, async (req, res)=>{
+  Menu.find({}, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving data');
+    } else {
+      res.json(data);
+    }
+  });
+})
+
 app.get('/api/user', isLoggedIn, (req, res) => {
   // If the middleware is successful, the user ID will be available on the request object
   const userId = req.userId;

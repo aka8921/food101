@@ -15,12 +15,16 @@ const MenuSchema = new mongoose.Schema({
           type: Number,
           required: true
         },
+        profit:{
+          type: Number,
+          required: true
+        },
         createdAt: {
             type: Date,
             default: Date.now
         } 
     },
-    {collection: "orders"}
+    {collection: "menu"}
 )
 
 const model = mongoose.model("MenuSchema", MenuSchema)
