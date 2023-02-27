@@ -131,8 +131,11 @@ app.get('/api/user', isLoggedIn, (req, res) => {
       username: user.username,
       firstName: user.firstName,
       lastName: user.lastName,
-      mealCard: user.mealCard
+      mealCard: user.mealCard,
+      userType: user.userType
     };
+
+    console.log(userObject)
 
     // Send a response with the user object
     res.status(200).json({ user: userObject });

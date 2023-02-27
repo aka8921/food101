@@ -1,4 +1,6 @@
-export const MealCard = () => {
+import CountUp from 'react-countup';
+
+export const MealCard = ({balance}) => {
     return (
         <div className="relative flex items-center justify-center">
             <div 
@@ -14,7 +16,7 @@ export const MealCard = () => {
                 </div> */}
                 <div className="flex flex-col items-start justify-between gap-1">
                     <div className="text-md font-light">Balance</div>
-                    <div className="text-3xl font-bold">₹5,403</div>
+                    <div className="text-3xl font-bold">₹<CountUp end={balance} separator=","/></div>
                 </div>
                 {/* <div className="text-[30px]"
                 style={{fontFamily: "'Teko', sans-serif"}}
