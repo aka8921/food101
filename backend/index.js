@@ -192,6 +192,37 @@ app.put('/api/recharge', isLoggedIn, (req, res) => {
     });
 })
 
+app.get('/api/order', isLoggedIn, async (req, res)=>{
+  const userId = req.userId;
+  Orders.find({user: userId}, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving data');
+    } else {
+      res.json(data);
+    }
+  });
+})
+
+app.post('/api/order', isLoggedIn, async (req, res)=>{
+  const {items, total} = req.body
+  console.log(req.userId)
+  try{
+    response = await Orders.create({
+        user: req.userId,
+        items,
+        total
+    })
+    console.log("Order Added successfully: ",response)
+  }
+  catch(error){
+    if (error.code === 11000)
+        return res.json({status: "error", message: "Item already in use"})
+    throw error
+  } 
+  res.json({status: "ok"})
+})
+
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)
 })

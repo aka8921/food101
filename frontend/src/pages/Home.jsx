@@ -3,7 +3,7 @@ import { MainHeader } from "../components/MainHeader";
 import { MealCard } from "../components/MealCard";
 import { Menu } from "../components/Menu";
 import { BottomNav } from "../components/BottomNav";
-import { RecentBookings } from "../components/RecentBookings";
+import { RecentOrders } from "../components/RecentOrders";
 import { useEffect, useState } from "react";
 import { GradientButton } from "../components/GradientButton";
 import Arrow from '../assets/arrow.svg'
@@ -11,6 +11,7 @@ import Arrow from '../assets/arrow.svg'
 
 export const Home = () => {
     const [userDetails, setUserDetails] = useState({})
+    const [orders, setOrders] = useState([])
     const [cart, setCart] = useState({
       items:[],
       total: 0
@@ -38,7 +39,6 @@ export const Home = () => {
       let testTemp = test
       testTemp++
       setTest(testTemp)
-      console.log(cart)
     }
 
     const removeFromCart = (item) => {
@@ -61,7 +61,6 @@ export const Home = () => {
       let testTemp = test
       testTemp++
       setTest(testTemp)
-        console.log(cart)
       }
     }
 
@@ -83,7 +82,6 @@ export const Home = () => {
             return res.json();
           })
           .then(data => {
-            // console.log(data);
             setUserDetails(data.user)
           })
           .catch(error => {
@@ -91,8 +89,33 @@ export const Home = () => {
           });
     }
 
+    const fetchOrders = () => {
+      const jwt_token = localStorage.getItem('token')
+      console.log("fuction: fetchUserDetails")
+      console.log("token: ", jwt_token)
+
+      fetch('http://localhost:3000/api/order', {
+          headers: {
+            'Authorization': `Bearer ${jwt_token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return res.json();
+        })
+        .then(data => {
+          setOrders(data)
+          console.log(orders)
+        })
+        .catch(error => {
+          console.error('There was an error:', error);
+        });
+  }
+
     const getItemQuantity = (id) => {
-      console.log("getItemQuantity")
       const itemIndex = cart.items.findIndex((x) => x.item === id);
       if(itemIndex > -1)
       {
@@ -102,24 +125,45 @@ export const Home = () => {
       return 0
     }
 
-    const checkoutOrder = () => {
+    const checkoutOrder = async () => {
+      const jwt_token = localStorage.getItem('token')
+      console.log("fuction: fetchUserDetails")
+      console.log("token: ", jwt_token)
+
       const emptyCart = {
         items:[],
         total: 0
       }
 
-      setCart(emptyCart)
+      const response = await fetch('http://localhost:3000/api/order', {
+            method: 'POST',
+            headers: {
+            'Authorization': `Bearer ${jwt_token}`,
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cart)
+        });
+        const content = await response.json();
+
+        if(content.status === "ok"){
+            fetchOrders()
+            setCart(emptyCart)
+        }
+        else{
+            alert(`Error: ${content.message}`)
+        }
     }
 
     useEffect(()=> {
         fetchUserDetails()
+        fetchOrders()
     }, [])
 
     return(
         <div className="flex flex-col py-5 px-6 overflow-auto h-screen">
             <MainHeader name={userDetails.firstName+" "+userDetails.lastName}/>
             <MealCard balance={userDetails.mealCard}/>
-            <RecentBookings />
+            {orders.length != false && <RecentOrders orders={orders}/>}
             <Menu addToCart={addToCart} removeFromCart={removeFromCart} cart={cart} getItemQuantity={getItemQuantity}/>
             <BottomNav />
 
