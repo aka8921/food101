@@ -1,7 +1,28 @@
-export const RecentOrders = ({orders}) => {
+export const RecentOrders = ({orders, fetchOrders}) => {
 
-    const handleCancel = (id) => {
-        alert(`cancelling ${id}`)
+    const handleCancel = async (id) => {
+            const jwt_token = localStorage.getItem('token')
+            console.log("fuction: fetchUserDetails")
+            console.log("token: ", jwt_token)
+
+            const body ={orderId: id}
+      
+            const response = await fetch('http://localhost:3000/api/order', {
+                  method: 'DELETE',
+                  headers: {
+                  'Authorization': `Bearer ${jwt_token}`,
+                  'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(body)
+              });
+              const content = await response.json();
+      
+              if(content.status === "ok"){
+                  fetchOrders()
+              }
+              else{
+                  alert(`Error: ${content.message}`)
+              }
     }
 
 

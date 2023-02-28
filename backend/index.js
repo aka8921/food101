@@ -223,6 +223,23 @@ app.post('/api/order', isLoggedIn, async (req, res)=>{
   res.json({status: "ok"})
 })
 
+app.delete('/api/order', isLoggedIn, async (req, res)=>{
+  const {orderId} = req.body
+  console.log("Delete")
+  Orders.findByIdAndDelete(orderId)
+    .then(order => {
+      if (order) {
+        res.status(200).json({ status: "ok", message: `Order with _id ${orderId} deleted`, order });
+      } else {
+        res.status(404).json({ message: `Order with _id ${orderId} not found` });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+})
+
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)
 })

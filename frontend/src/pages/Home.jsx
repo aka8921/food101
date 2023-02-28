@@ -163,10 +163,10 @@ export const Home = () => {
         <div className="flex flex-col py-5 px-6 overflow-auto h-screen">
             <MainHeader name={userDetails.firstName+" "+userDetails.lastName}/>
             <MealCard balance={userDetails.mealCard}/>
-            {orders.length != false && <RecentOrders orders={orders}/>}
+            {orders.length != false && <RecentOrders orders={orders} fetchOrders={fetchOrders}/>}
             <Menu addToCart={addToCart} removeFromCart={removeFromCart} cart={cart} getItemQuantity={getItemQuantity}/>
             <BottomNav />
-
+            <div className="mb-2"></div>
             {
               cart.items.length > 0 && 
               <GradientButton

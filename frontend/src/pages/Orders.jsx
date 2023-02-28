@@ -1,81 +1,42 @@
 import {Header} from '../components/Header'
+import { useEffect, useState } from 'react'
 export const Orders = () => {
-    const orders = [
-        {
-            items:[
-                {
-                    item: {
-                        _id: "1234",
-                        name: "Veg Biriyani",
-                        price: "$50.00",
-                        img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-                    },
-                    quantity: 1
-                },
-                {
-                    item: {
-                        _id: "1234",
-                        name: "Samosa",
-                        price: "$50.00",
-                        img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-                    },
-                    quantity: 3
-                },
-                {
-                    item: {
-                        _id: "1234",
-                        name: "Meals",
-                        price: "$50.00",
-                        img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-                    },
-                    quantity: 1
-                }
-            ],
-            total: 500
-        },
-        {
-            items:[
-                {
-                    item: {
-                        _id: "1234",
-                        name: "Samosa",
-                        price: "$50.00",
-                        img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-                    },
-                    quantity: 3
-                },
-                {
-                    item: {
-                        _id: "1234",
-                        name: "Meals",
-                        price: "$50.00",
-                        img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-                    },
-                    quantity: 1
-                }
-            ],
-            total: 140
-        },
-        {
-            items:[
-                {
-                    item: {
-                        _id: "1234",
-                        name: "Veg Biriyani",
-                        price: "$50.00",
-                        img: "https://www.indianveggiedelight.com/wp-content/uploads/2020/04/veg-biryani-instant-pot.jpg"
-                    },
-                    quantity: 2
-                },
-            ],
-            total: 100
-        }
-    ]
+    const [orders, setOrders] = useState([])
+
+    useEffect(() => {
+        fetchOrders()
+    }, [])
+
+    const fetchOrders = () => {
+        const jwt_token = localStorage.getItem('token')
+        console.log("fuction: fetchUserDetails")
+        console.log("token: ", jwt_token)
+  
+        fetch('http://localhost:3000/api/order', {
+            headers: {
+              'Authorization': `Bearer ${jwt_token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(res => {
+            if (!res.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return res.json();
+          })
+          .then(data => {
+            setOrders(data)
+            console.log(orders)
+          })
+          .catch(error => {
+            console.error('There was an error:', error);
+          });
+    }
 
     const orderList = orders.map((order, key) => {
         const orderItems = order.items.map((dish, key) => {
             return(
-                <div className="text-xs text-slate-500" key={key}>{dish.item.name} {dish.quantity > 1 ? `(${dish.quantity})`: ""}</div>
+                <div className="text-xs text-slate-500" key={key}>{dish.name} {dish.quantity > 1 ? `(${dish.quantity})`: ""}</div>
             )
         })
         return(
