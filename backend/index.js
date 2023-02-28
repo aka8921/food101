@@ -107,7 +107,7 @@ app.post('/api/sign-up', async (req, res) => {
   res.json({status: "ok"})
 })
 
-app.post('/api/menu', isLoggedIn, async (req, res)=>{
+app.post('/api/menu', async (req, res)=>{
   const {name, imageUrl, price, profit} = req.body
   try{
     response = await Menu.create({
