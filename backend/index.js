@@ -17,6 +17,7 @@ mongoose.connect('mongodb://localhost/food101')
 app.use(cors())
 app.use(express.json())
 
+
 function isLoggedIn(req, res, next) {
   // Get the token from the request header
   const authHeader = req.headers.authorization;
@@ -172,7 +173,7 @@ app.get('/api/user', isLoggedIn, (req, res) => {
     });
 })
 
-app.put('/api/recharge', isLoggedIn, (req, res) => {
+app.put('/api/recharge', isLoggedIn, async (req, res) => {
   const userId = req.userId;
   const username = req.username;
   const rechargeAmount = req.body.rechargeAmount
@@ -206,7 +207,6 @@ app.get('/api/order', isLoggedIn, async (req, res)=>{
 
 app.post('/api/order', isLoggedIn, async (req, res)=>{
   const {items, total} = req.body
-  console.log(req.userId)
   try{
     response = await Orders.create({
         user: req.userId,
@@ -238,6 +238,37 @@ app.delete('/api/order', isLoggedIn, async (req, res)=>{
       console.log(err);
       res.status(500).json({ error: err });
     });
+})
+
+app.post('/api/transaction', isLoggedIn, async (req, res) => {
+  const {transactionAmount} = req.body
+
+  try{
+    response = await Transactions.create({
+        user: req.userId,
+        transactionAmount
+    })
+    console.log("Order Added successfully: ",response)
+  }
+  catch(error){
+    if (error.code === 11000)
+        return res.json({status: "error", message: "Item already in use"})
+    throw error
+  } 
+  res.json({status: "ok"})
+
+})
+
+app.get('/api/transaction', isLoggedIn, async (req, res)=>{
+  const userId = req.userId;
+  Transactions.find({user: userId}, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving data');
+    } else {
+      res.json(data);
+    }
+  });
 })
 
 app.listen(PORT, () => {

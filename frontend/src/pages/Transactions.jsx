@@ -1,42 +1,85 @@
 import {Header} from '../components/Header'
+import { useState, useEffect } from 'react'
 export const Transactions = () => {
-    const transactions = [
-        {
-            date: "09/07/2023",
-            amount: -50
-        },
-        {
-            date: "09/07/2023",
-            amount: 500
-        },
-        {
-            date: "09/07/2023",
-            amount: -30
-        },
-        {
-            date: "09/07/2023",
-            amount: -100
-        },
-        {
-            date: "09/07/2023",
-            amount: 1000
-        },
-        {
-            date: "09/07/2023",
-            amount: -40
-        },
-        {
-            date: "10/07/2023",
-            amount: -10
-        }
-    ]
+    // const transactions = [
+    //     {
+    //         date: "09/07/2023",
+    //         amount: -50
+    //     },
+    //     {
+    //         date: "09/07/2023",
+    //         amount: 500
+    //     },
+    //     {
+    //         date: "09/07/2023",
+    //         amount: -30
+    //     },
+    //     {
+    //         date: "09/07/2023",
+    //         amount: -100
+    //     },
+    //     {
+    //         date: "09/07/2023",
+    //         amount: 1000
+    //     },
+    //     {
+    //         date: "09/07/2023",
+    //         amount: -40
+    //     },
+    //     {
+    //         date: "10/07/2023",
+    //         amount: -10
+    //     }
+    // ]
 
-    const transactionsList = transactions.map((transaction, i) => {
-        const color = transaction.amount > 0 ? "text-green-600" : "text-red-600";
+    const [transactions, setTransactions] = useState([])
+
+    useEffect(() => {
+        fetchTransactions()
+    }, [])
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Add 1 because getMonth() returns a zero-based index
+        const year = date.getFullYear();
+
+        const formattedDate = `${day}/${month}/${year.toString().slice(-2)}`;
+        return(formattedDate); // Output: 28/2/23
+    }
+
+    const fetchTransactions = () => {
+        const jwt_token = localStorage.getItem('token')
+        console.log("fuction: fetchUserDetails")
+        console.log("token: ", jwt_token)
+  
+        fetch('http://localhost:3000/api/transaction', {
+            headers: {
+              'Authorization': `Bearer ${jwt_token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(res => {
+            if (!res.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return res.json();
+          })
+          .then(data => {
+            setTransactions(data)
+          })
+          .catch(error => {
+            console.error('There was an error:', error);
+          });
+    }
+
+    const transactionsList = transactions.slice(0).reverse().map((transaction, i) => {
+        const color = transaction.transactionAmount > 0 ? "text-green-600" : "text-red-600";
         return (
             <div className="flex items-center justify-between odd:bg-gray-100 px-6 py-1" key={i}>
-                <div className="text-md text-slate-500">{transaction.date}</div>
-                <div className={`text-lg font-regular text-green ${color}`}>{(transaction.amount > 0 ? "+" : "")+transaction.amount} ₹</div>
+                <div className="text-md text-slate-500">{formatDate(transaction.createdAt)}</div>
+                <div className={`text-lg font-regular text-green ${color}`}>{(transaction.transactionAmount > 0 ? "+" : "")+transaction.transactionAmount} ₹</div>
             </div>)
     })
     return(

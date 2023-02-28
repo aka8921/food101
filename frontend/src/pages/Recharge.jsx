@@ -7,6 +7,30 @@ export const Recharge = () => {
     const navigate = useNavigate();
     const [rechargeAmount, setRechargeAmount] = useState(0)
 
+    const addTransaction = ()=>{
+      const jwt_token = localStorage.getItem('token')
+      fetch('http://localhost:3000/api/transaction', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwt_token}`,
+          },
+          body: JSON.stringify({
+            transactionAmount: Number(rechargeAmount)
+          })
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            navigate("/")
+          })
+          .catch(error => {
+            console.error(error);
+            alert("Error")
+          });
+      
+  }
+
     const rechargeMealCard = ()=>{
         const jwt_token = localStorage.getItem('token')
         fetch('http://localhost:3000/api/recharge', {
@@ -22,12 +46,13 @@ export const Recharge = () => {
             .then(response => response.json())
             .then(data => {
               console.log(data);
-              navigate("/")
+              addTransaction()
             })
             .catch(error => {
               console.error(error);
               alert("Error")
             });
+        
     }
 
     return(
