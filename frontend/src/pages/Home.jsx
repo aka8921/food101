@@ -5,6 +5,8 @@ import { Menu } from "../components/Menu";
 import { BottomNav } from "../components/BottomNav";
 import { RecentBookings } from "../components/RecentBookings";
 import { useEffect, useState } from "react";
+import { GradientButton } from "../components/GradientButton";
+import Arrow from '../assets/arrow.svg'
 
 
 export const Home = () => {
@@ -88,9 +90,6 @@ export const Home = () => {
             console.error('There was an error:', error);
           });
     }
-    useEffect(()=> {
-        fetchUserDetails()
-    }, [])
 
     const getItemQuantity = (id) => {
       console.log("getItemQuantity")
@@ -102,6 +101,20 @@ export const Home = () => {
       }
       return 0
     }
+
+    const checkoutOrder = () => {
+      const emptyCart = {
+        items:[],
+        total: 0
+      }
+
+      setCart(emptyCart)
+    }
+
+    useEffect(()=> {
+        fetchUserDetails()
+    }, [])
+
     return(
         <div className="flex flex-col py-5 px-6 overflow-auto h-screen">
             <MainHeader name={userDetails.firstName+" "+userDetails.lastName}/>
@@ -109,6 +122,18 @@ export const Home = () => {
             <RecentBookings />
             <Menu addToCart={addToCart} removeFromCart={removeFromCart} cart={cart} getItemQuantity={getItemQuantity}/>
             <BottomNav />
+
+            {
+              cart.items.length > 0 && 
+              <GradientButton
+              className="mt-auto self-stretch gap-2 text-white flex items-center justify-center"
+              onClick={checkoutOrder}
+              >
+                  <span>Place Order</span>
+                  <img src={Arrow} alt="Arrow-right" className='w-[15px] mt-[2px]' /> 
+            </GradientButton>  
+            }
+            
         </div>
     )
 }

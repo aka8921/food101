@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import Logo from '../../assets/logo.png'
-import Arrow from '../../assets/arrow.svg'
+import Logo from '../assets/logo.png'
+import Arrow from '../assets/arrow.svg'
 import { useNavigate, Link } from "react-router-dom";
-import {GradientButton} from '../../components/GradientButton'
+import {GradientButton} from '../components/GradientButton'
 
 export const Login = () => {
     const [userName, setUserName] = useState("")

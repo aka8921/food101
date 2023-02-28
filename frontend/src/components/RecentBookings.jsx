@@ -24,9 +24,9 @@ export const RecentBookings = () => {
     const bookingItems = bookings.map ((item, i) => {
         return(
             <div className="flex items-center" key={i}>
-                <div className="bg-red-300 w-[50px] h-[50px] rounded-full mr-2 overflow-hidden relative">
+                {/* <div className="bg-red-300 w-[50px] h-[50px] rounded-full mr-2 overflow-hidden relative">
                     <img src={item.img} alt={item.name} className="w-full h-full object-cover"/>
-                </div>
+                </div> */}
                 <div className="flex flex-col">
                     <div className="text-md font-medium">{item.name} {item.count > 1 ? `(${item.count})`:""}</div>
                     <div className="text-[13px] opacity-50">{item.price}</div>
