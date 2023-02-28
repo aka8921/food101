@@ -2,7 +2,7 @@ import plus from "../assets/plus.svg"
 import minus from "../assets/minus.svg"
 import { useEffect, useState } from "react"
 
-export const Menu = () => {
+export const Menu = ({addToCart, removeFromCart}) => {
 
     const [menu, setMenu] = useState([])
 
@@ -32,14 +32,15 @@ export const Menu = () => {
 
     useEffect(()=> {
         fetchMenuItems()
+        console.log("useEffect Menu")
     }, [])
 
-    const handleCartAdd = (id) => {
-        alert(`Adding ${id} to Cart`)
-    }
-
-    const handleCartRemove = (id) => {
-        alert(`Removing ${id} to Cart`)
+    const getItemQuantityFromCart = (id) => {
+        const itemIndex = cart.items.findIndex((x) => x.item === id);
+        if (itemIndex >= 0){
+            return cart.items[itemIndex].quantity
+        }
+        return 12
     }
 
 
@@ -54,14 +55,14 @@ export const Menu = () => {
                     >
                         <div 
                         className="flex items-center self-stretch w-[25px] justify-center"
-                        onClick={() => {handleCartRemove(item._id)}}
+                        onClick={() => {removeFromCart(item)}}
                         >
                             <img src={minus} alt="" className="w-[12px]" />
                         </div>
-                        <div className="">0</div>
+                        <div className="">{0}</div>
                         <div 
                         className="flex items-center self-stretch w-[25px] justify-center"
-                        onClick={() => {handleCartAdd(item._id)}}
+                        onClick={() => {addToCart(item)}}
                         >
                             <img src={plus} alt="" className="w-[12px]" />
                         </div>
