@@ -13,6 +13,7 @@ export const Home = () => {
       items:[],
       total: 0
     })
+    const[test, setTest] = useState(0)
 
     const addToCart = (item) => {
       const newCart = cart
@@ -31,6 +32,10 @@ export const Home = () => {
       }
       newCart.total += newItem.quantity * newItem.price;
       setCart(newCart);
+      // item number updates for some reason
+      let testTemp = test
+      testTemp++
+      setTest(testTemp)
       console.log(cart)
     }
 
@@ -50,6 +55,10 @@ export const Home = () => {
         }
         newCart.total -= itemPrice;
         setCart(newCart);
+              // item number updates for some reason
+      let testTemp = test
+      testTemp++
+      setTest(testTemp)
         console.log(cart)
       }
     }
@@ -82,12 +91,23 @@ export const Home = () => {
     useEffect(()=> {
         fetchUserDetails()
     }, [])
+
+    const getItemQuantity = (id) => {
+      console.log("getItemQuantity")
+      const itemIndex = cart.items.findIndex((x) => x.item === id);
+      if(itemIndex > -1)
+      {
+        const qty = cart.items[itemIndex].quantity
+        return qty
+      }
+      return 0
+    }
     return(
         <div className="flex flex-col py-5 px-6 overflow-auto h-screen">
             <MainHeader name={userDetails.firstName+" "+userDetails.lastName}/>
             <MealCard balance={userDetails.mealCard}/>
             <RecentBookings />
-            <Menu addToCart={addToCart} removeFromCart={removeFromCart}/>
+            <Menu addToCart={addToCart} removeFromCart={removeFromCart} cart={cart} getItemQuantity={getItemQuantity}/>
             <BottomNav />
         </div>
     )

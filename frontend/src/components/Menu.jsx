@@ -2,7 +2,7 @@ import plus from "../assets/plus.svg"
 import minus from "../assets/minus.svg"
 import { useEffect, useState } from "react"
 
-export const Menu = ({addToCart, removeFromCart}) => {
+export const Menu = ({addToCart, removeFromCart, cart, getItemQuantity}) => {
 
     const [menu, setMenu] = useState([])
 
@@ -59,7 +59,7 @@ export const Menu = ({addToCart, removeFromCart}) => {
                         >
                             <img src={minus} alt="" className="w-[12px]" />
                         </div>
-                        <div className="">{0}</div>
+                        <div className="">{cart ? getItemQuantity(item._id) : 0}</div>
                         <div 
                         className="flex items-center self-stretch w-[25px] justify-center"
                         onClick={() => {addToCart(item)}}
