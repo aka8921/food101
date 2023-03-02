@@ -38,12 +38,39 @@ function isLoggedIn(req, res, next) {
     // If the token is valid, set the user ID on the request object and call next()
     req.userId = decoded.id;
     req.username = decoded.username;
+    req.userType = decoded.userType;
     next();
   });
 }
 
+function roleCheckAdmin(req, res, next) {
+  
+  if (req.userType !== "admin") {
+    return res.status(401).json({ message: 'This feature is only accessible by admins' });
+  }
+  next();
+}
+
+function roleCheckcanteen(req, res, next) {
+  
+  if (req.userType !== "admin" || req.userType !== "canteen-staff") {
+    return res.status(401).json({ message: 'This feature is only accessible by Admins and Canteen staff' });
+  }
+  next();
+}
+
+function roleCheckKitchen(req, res, next) {
+  
+  if (req.userType !== "admin" || req.userType !== "canteen-staff" || req.userType !== "kitchen-staff") {
+    return res.status(401).json({ message: 'This feature is only accessible by Admins, Canteen and Kitchen staff' });
+  }
+  next();
+}
+
+
+
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Food 101!')
 })
 
 app.post('/api/sign-in', async (req, res) => {
@@ -65,7 +92,7 @@ app.post('/api/sign-in', async (req, res) => {
         }
 
         if(await bcrypt.compare(password, user.password)){
-            const token = jwt.sign({id: user._id, username: user.username}, JWT_TOKEN)
+            const token = jwt.sign({id: user._id, username: user.username, userType: user.userType}, JWT_TOKEN)
             return res.send({status: "ok", body: token, message: "user verified"})
         }
         else{
@@ -79,34 +106,6 @@ app.post('/api/sign-in', async (req, res) => {
 
     res.send({status: "ok"})
   })
-
-app.post('/api/sign-up', async (req, res) => {
-  const {username, password, firstName, lastName, userType} = req.body
-  if(!username || typeof username !== 'string'){
-    return res.json({status: "error", message: "Invalid Username"})
-  }
-
-  if(!username || password.length < 5){
-    return res.json({status: "error", message: "Password Too Short"})
-  }
-  hashedPassword = await(bcrypt.hash(password, 10))
-  try{
-    response = await User.create({
-        username,
-        password: hashedPassword,
-        firstName,
-        lastName,
-        userType
-    })
-    console.log("User Created successfully: ",response)
-  }
-  catch(error){
-    if (error.code === 11000)
-        return res.json({status: "error", message: "Username already in use"})
-    throw error
-  } 
-  res.json({status: "ok"})
-})
 
 app.post('/api/menu', async (req, res)=>{
   const {name, imageUrl, price, profit} = req.body
@@ -270,6 +269,107 @@ app.get('/api/transaction', isLoggedIn, async (req, res)=>{
     }
   });
 })
+
+// Admin
+
+app.post('/api/admin/sign-up',isLoggedIn, roleCheckAdmin, async (req, res) => {
+  const {username, password, firstName, lastName, userType, mealCard} = req.body
+  if(!username || typeof username !== 'string'){
+    return res.json({status: "error", message: "Invalid Username"})
+  }
+
+  if(!username || password.length < 5){
+    return res.json({status: "error", message: "Password Too Short"})
+  }
+  hashedPassword = await(bcrypt.hash(password, 10))
+  try{
+    response = await User.create({
+        username,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        userType,
+        mealCard : mealCard | 0
+    })
+    console.log("User Created successfully: ",response)
+  }
+  catch(error){
+    if (error.code === 11000)
+        return res.json({status: "error", message: "Username already in use"})
+    throw error
+  } 
+  res.json({status: "ok"})
+})
+
+app.get('/api/admin/superuser', async (req, res) => {
+  const password = "superuser"
+  hashedPassword = await(bcrypt.hash(password, 10))
+  try{
+    response = await User.create({
+        username: "superuser",
+        password: hashedPassword,
+        firstName: "Super",
+        lastName: "User",
+        userType: "admin",
+        mealCard : 0
+    })
+    console.log("SuperUser Created successfully: ",response)
+  }
+  catch(error){
+    if (error.code === 11000)
+        return res.json({status: "error", message: "Username already in use"})
+    throw error
+  } 
+  res.json({status: "ok"})
+})
+
+app.get('/api/admin/users', isLoggedIn, roleCheckAdmin, (req, res) => {
+  // If the middleware is successful, the user ID will be available on the request object
+  const userId = req.userId;
+  const username = req.username;
+  const userType = req.userType
+  // console.log("userId", userId)
+  
+  User.find({}, (err, users) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving data');
+    }
+
+    const simplifiedUsers = users.map(user => (
+      { 
+        _id: user._id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        mealCard: user.mealCard,
+        userType: user.userType
+      }
+      
+      ));
+
+    // Send a response with the simplifiedUsers object
+    res.status(200).json({ users: simplifiedUsers });
+    });
+})
+
+app.delete('/api/admin/users', isLoggedIn, async (req, res)=>{
+  const {userId} = req.body
+  console.log("Delete")
+  User.findByIdAndDelete(userId)
+    .then(user => {
+      if (user) {
+        res.status(200).json({ status: "ok", message: `Order with _id ${userId} deleted`, user });
+      } else {
+        res.status(404).json({ message: `Order with _id ${userID} not found` });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+})
+
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)

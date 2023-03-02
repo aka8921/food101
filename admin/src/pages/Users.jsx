@@ -1,19 +1,66 @@
+import { useEffect, useState } from 'react'
 import {Link} from 'react-router-dom'
-
-const people = [
-    { name: 'Archana TK', username: '@archanatk', balance: '$5,000', role: 'Day Scholar' },
-  { name: 'John Smith', username: '@jsmith', balance: '$2,500', role: 'Residential Student' },
-  { name: 'Jane Doe', username: '@jdoe', balance: '$4,000', role: 'Day Scholar' },
-  { name: 'Mike Johnson', username: '@mjohnson', balance: '$3,200', role: 'Residential Student' },
-  { name: 'Lisa Brown', username: '@lbrown', balance: '$6,500', role: 'Day Scholar' },
-  { name: 'David Lee', username: '@dlee', balance: '$1,800', role: 'Residential Student' },
-  { name: 'Emily Chen', username: '@echen', balance: '$2,300', role: 'Day Scholar' },
-  { name: 'Daniel Kim', username: '@dkim', balance: '$7,800', role: 'Residential Student' },
-  { name: 'Samantha Wong', username: '@swong', balance: '$4,500', role: 'Day Scholar' },
-  { name: 'Kevin Patel', username: '@kpatel', balance: '$6,200', role: 'Residential Student' },
-  ]
   
  export const Users = () => {
+
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
+  const fetchUsers = () => {
+    const jwt_token = localStorage.getItem('token')
+    console.log("fuction: fetchUsers")
+    console.log("token: ", jwt_token)
+
+    fetch('http://localhost:3000/api/admin/users', {
+        headers: {
+          'Authorization': `Bearer ${jwt_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
+      .then(data => {
+        setUsers(data.users)
+      })
+      .catch(error => {
+        console.error('There was an error:', error);
+      });
+}
+
+const handleDelete = async (id) => {
+  const jwt_token = localStorage.getItem('token')
+  console.log("fuction: fetchUserDetails")
+  console.log("token: ", jwt_token)
+
+  const body ={userId: id}
+
+  const response = await fetch('http://localhost:3000/api/admin/users', {
+        method: 'DELETE',
+        headers: {
+        'Authorization': `Bearer ${jwt_token}`,
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    });
+    const content = await response.json();
+
+    if(content.status === "ok"){
+        fetchUsers()
+    }
+    else{
+        alert(`Error: ${content.message}`)
+    }
+}
+
+
+
     return (
       <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="sm:flex sm:items-center">
@@ -59,23 +106,23 @@ const people = [
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {people.map((person) => (
-                      <tr key={person.email}>
+                    {users.map((user) => (
+                      <tr key={user.username}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                          {person.name}
+                        {user.firstName} {user.lastName}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.username}</td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.balance}</td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.role}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@{user.username}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.mealCard}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.userType}</td>
                         <td className="relative flex gap-8 items-center justify-end whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        { <div onClick={() => handleDelete(user._id)} className=" cursor-pointer text-red-600 hover:text-red-900">
+                            Delete
+                          </div>}
                           <a href="#" className="text-indigo-600 hover:text-indigo-900">
                             Edit
                           </a>
                           <a href="#" className="text-green-600 hover:text-green-900">
                             Recharge
-                          </a>
-                          <a href="#" className="text-red-600 hover:text-red-900">
-                            Delete
                           </a>
                         </td>
                       </tr>

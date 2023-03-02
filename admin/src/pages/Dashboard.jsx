@@ -1,4 +1,4 @@
-import { BoltIcon, ChartBarIcon, CurrencyRupeeIcon, UsersIcon } from '@heroicons/react/24/outline'
+import { BoltIcon, ChartBarIcon, CurrencyRupeeIcon, UsersIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline'
 import { Route, Routes } from 'react-router-dom';
 import {Users} from './Users'
 import {Menu} from './Menu'
@@ -6,7 +6,7 @@ import {Orders} from './Orders'
 import {Transactions} from './Transactions'
 import { NotFound } from './NotFound';
 import Logo from '../assets/logo.png'
-import { Link, useLocation, Navigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { AddUsers } from './AddUsers';
 
 const navigation = [
@@ -21,7 +21,14 @@ function classNames(...classes) {
 }
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
   const location = useLocation();
+
+  const handleLogout = ()=> {
+    console.log("Logging you out... ")
+    localStorage.clear()
+    navigate("/login")
+}
 
   return (
     <div className="flex">
@@ -35,7 +42,7 @@ export const Dashboard = () => {
           />
           <div className="ml-4 font-bold">Food 101</div>
         </div>
-        <nav className="mt-5 flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
+        <nav className="mt-5 flex-1 flex flex-col bg-white px-2" aria-label="Sidebar">
           {navigation.map((item) => (
 
             <Link
@@ -56,18 +63,15 @@ export const Dashboard = () => {
                 aria-hidden="true"
               />
               <span className="flex-1">{item.name}</span>
-              {item.count ? (
-                <span
-                  className={classNames(
-                    item.current ? 'bg-white' : 'bg-gray-100 group-hover:bg-gray-200',
-                    'ml-3 inline-block rounded-full py-0.5 px-3 text-xs font-medium'
-                  )}
-                >
-                  {item.count}
-                </span>
-              ) : null}
             </Link>
           ))}
+          <div
+              onClick={handleLogout}
+              className="cursor-pointer mt-auto text-red-600 hover:bg-red-50 hover:text-red-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+            >
+              <ArrowLeftOnRectangleIcon className='text-red-400 group-hover:text-red-500 mr-3 h-6 w-6 flex-shrink-0'/>
+              <span className="flex-1">Log Out</span>
+            </div>
         </nav>
       </div>
       <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
