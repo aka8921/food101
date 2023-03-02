@@ -8,10 +8,9 @@ function App() {
   return (
         <Routes>
           <Route element={<PrivateRoutes/>}>
-            <Route path='/dashboard/*' element={<Dashboard/>}/>
+            <Route path='/*' element={<Dashboard/>}/>
           </Route>
           <Route path='/login' element={<Login/>}/>
-          <Route path="*" element={<NotFound />} />
         </Routes>
   )
 }

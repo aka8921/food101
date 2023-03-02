@@ -4,13 +4,16 @@ import {Users} from './Users'
 import {Menu} from './Menu'
 import {Orders} from './Orders'
 import {Transactions} from './Transactions'
+import { NotFound } from './NotFound';
 import Logo from '../assets/logo.png'
+import { Link, useLocation, Navigate } from 'react-router-dom';
+import { AddUsers } from './AddUsers';
 
 const navigation = [
-  { name: 'Users', icon: UsersIcon, href: '#', current: true },
-  { name: 'Menu', icon: BoltIcon, href: '#', current: false },
-  { name: 'Orders', icon: ChartBarIcon, href: '#', current: false },
-  { name: 'Transactions', icon: CurrencyRupeeIcon, href: '#', current: false },
+  { name: 'Users', page:"/users", icon: UsersIcon, href: '#', current: true },
+  { name: 'Menu', page:"/menu",icon: BoltIcon, href: '#', current: false },
+  { name: 'Orders', page:"/orders",icon: ChartBarIcon, href: '#', current: false },
+  { name: 'Transactions', page:"/transactions",icon: CurrencyRupeeIcon, href: '#', current: false },
 ]
 
 function classNames(...classes) {
@@ -18,6 +21,8 @@ function classNames(...classes) {
 }
 
 export const Dashboard = () => {
+  const location = useLocation();
+
   return (
     <div className="flex">
       <div className="flex w-[200px] bg-red-300 h-screen flex-col border-r border-gray-200 bg-white">
@@ -32,11 +37,12 @@ export const Dashboard = () => {
         </div>
         <nav className="mt-5 flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
           {navigation.map((item) => (
-            <a
+
+            <Link
               key={item.name}
-              href={item.href}
+              to={item.page}
               className={classNames(
-                item.current
+                location.pathname.startsWith(item.page)
                   ? 'bg-gray-100 text-gray-900 hover:bg-gray-100 hover:text-gray-900'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                 'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
@@ -60,7 +66,7 @@ export const Dashboard = () => {
                   {item.count}
                 </span>
               ) : null}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>
@@ -83,12 +89,15 @@ export const Dashboard = () => {
       </div>
     </div>
 
-    <div className="flex-1">
+    <div className="flex-1 h-screen overflow-y-scroll">
       <Routes>
-          <Route exact path="/" element={<Users />} />
+          <Route exact path="/" element={<Navigate to="/users" replace />} />
+          <Route exact path="/users" element={<Users />} />
+          <Route exact path="/users/add" element={<AddUsers />} />
           <Route exact path="/menu" element={<Menu />} />
           <Route exact path="/orders" element={<Orders />} />
           <Route exact path="/transactions" element={<Transactions />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
     </div>
     </div>
