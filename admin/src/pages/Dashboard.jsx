@@ -7,7 +7,8 @@ import {Transactions} from './Transactions'
 import { NotFound } from './NotFound';
 import Logo from '../assets/logo.png'
 import { Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
-import { AddUsers } from './AddUsers';
+import { AddUser } from './AddUser';
+import { EditUser } from './EditUser';
 
 const navigation = [
   { name: 'Users', page:"/users", icon: UsersIcon, href: '#', current: true },
@@ -97,7 +98,8 @@ export const Dashboard = () => {
       <Routes>
           <Route exact path="/" element={<Navigate to="/users" replace />} />
           <Route exact path="/users" element={<Users />} />
-          <Route exact path="/users/add" element={<AddUsers />} />
+          <Route exact path="/users/add" element={<AddUser />} />
+          <Route path="/users/:id/edit" element={<EditUser />} />
           <Route exact path="/menu" element={<Menu />} />
           <Route exact path="/orders" element={<Orders />} />
           <Route exact path="/transactions" element={<Transactions />} />

@@ -4,6 +4,12 @@ import {Link} from 'react-router-dom'
  export const Users = () => {
 
   const [users, setUsers] = useState([])
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const handleEditClick = (user) => {
+    setSelectedUser(user);
+  };
+
 
   useEffect(() => {
     fetchUsers()
@@ -36,8 +42,6 @@ import {Link} from 'react-router-dom'
 
 const handleDelete = async (id) => {
   const jwt_token = localStorage.getItem('token')
-  console.log("fuction: fetchUserDetails")
-  console.log("token: ", jwt_token)
 
   const body ={userId: id}
 
@@ -118,9 +122,12 @@ const handleDelete = async (id) => {
                         { <div onClick={() => handleDelete(user._id)} className=" cursor-pointer text-red-600 hover:text-red-900">
                             Delete
                           </div>}
-                          <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                            Edit
-                          </a>
+                          <Link to={`/users/${user.username}/edit`} onClick={() => handleEditClick(user)}>
+                            <div className="text-indigo-600 hover:text-indigo-900">
+                              Edit
+                            </div>
+                          </Link>
+                          
                           <a href="#" className="text-green-600 hover:text-green-900">
                             Recharge
                           </a>

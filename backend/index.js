@@ -370,6 +370,69 @@ app.delete('/api/admin/users', isLoggedIn, async (req, res)=>{
     });
 })
 
+app.post('/api/admin/user', isLoggedIn, roleCheckAdmin, (req, res) => {
+  // If the middleware is successful, the user ID will be available on the request object
+  const {username} = req.body
+  // console.log("userId", userId)
+  
+  User.findOne({ username: username }, (err, user) => {
+    if (err) {
+      // Handle the error
+      console.error(err);
+      return;
+    }
+  
+    if (!user) {
+      // Handle the case where the user is not found
+      console.error(`User with username ${username} not found.`);
+      return;
+    }
+  
+    const userObject = {
+      _id: user._id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      mealCard: user.mealCard,
+      userType: user.userType
+    };
+
+    // console.log(userObject)
+
+    // Send a response with the user object
+    res.status(200).json({ user: userObject });
+    });
+})
+
+app.put('/api/admin/edit/:username', isLoggedIn, roleCheckAdmin, async (req, res) => {
+  const username = req.params.username;
+  const { firstName, lastName, password, userType, newUsername } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ username: newUsername }); // check if newUsername already exists in the database
+    if (existingUser && existingUser.username !== username) {
+      return res.status(400).json({ message: `Username ${newUsername} already exists` });
+    }
+  
+    const updatedFields = { firstName, lastName, userType, username: newUsername };
+    if (password) { // if password is provided, encrypt it before updating
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      updatedFields.password = hashedPassword;
+    }
+
+    const updatedUser = await User.findOneAndUpdate({ username }, updatedFields, { new: true });
+    if (updatedUser) {
+      return res.status(200).json({ message: `User ${username} updated successfully`, user: updatedUser, status: "ok" });
+    } else {
+      return res.status(404).json({ message: `User ${username} not found` });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: err });
+  }
+})
+
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)

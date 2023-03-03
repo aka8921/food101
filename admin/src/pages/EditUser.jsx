@@ -1,9 +1,10 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
-export const AddUsers = () => {
+export const EditUser = () => {
     const navigate = useNavigate()
+    const { id } = useParams();
 
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
@@ -12,10 +13,46 @@ export const AddUsers = () => {
     const [mealCard, setMealCard] = useState(0)
     const [role, setRole] = useState("day-scholar")
 
-    const handleAddUser = async () => {
+    useEffect(()=> {
+      fetchUser()
+    }, [])
+
+    const fetchUser = async () => {
+      const jwt_token = localStorage.getItem('token')
+      console.log("fuction: fetchUser")
+    
+      const body ={username: id}
+    
+      fetch('http://localhost:3000/api/admin/user', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${jwt_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+      .then(res => {
+        console.log("res")
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
+      .then(data => {
+        setFirstName(data.user.firstName || "")
+        setLastName(data.user.lastName || "")
+        setUsername(data.user.username || "")
+        setRole(data.user.userType || "")
+      })
+      .catch(error => {
+        console.error('There was an error:', error);
+      });
+    }
+
+    const handleEditUser = async () => {
       const jwt_token = localStorage.getItem('token')
       const userObject = {
-        username,
+        newUsername: username,
         firstName,
         lastName,
         mealCard,
@@ -25,8 +62,8 @@ export const AddUsers = () => {
 
       console.log(userObject)
 
-      const response = await fetch('http://localhost:3000/api/admin/sign-up', {
-            method: 'POST',
+      const response = await fetch(`http://localhost:3000/api/admin/edit/${id}`, {
+            method: 'PUT',
             headers: {
             'Authorization': `Bearer ${jwt_token}`,
             'Content-Type': 'application/json'
@@ -35,7 +72,6 @@ export const AddUsers = () => {
         });
         const content = await response.json();
 
-        console.log("sign Up : ", content)
         if(content.status === "ok"){
             navigate(-1)
         }
@@ -47,9 +83,9 @@ export const AddUsers = () => {
           <div className="space-y-6 sm:space-y-5">
             <div className='flex flex-col items-start gap-2'>
                 <div onClick={() => {navigate(-1)}} className="flex py-2 items-center text-sm text-gray-400 hover:text-gray-900 cursor-pointer justify-center gap-2"><div className="w-4"><ArrowLeftIcon /></div> Go Back</div>                
-              <h3 className="text-[30px] font-semibold leading-6 text-gray-900">Add User</h3>
+              <div className='flex gap-2'><h3 className="text-[30px] font-semibold leading-6 text-gray-900">Edit User</h3> <div className='flex py-2 items-center text-sm text-gray-400 hover:text-gray-900 cursor-pointer justify-center gap-2'>@{id}</div></div>
               <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                Make sure you give appropriate user roles to the new user
+                The user might need to log-in again if there is any changes in username / password
               </p>
             </div>
 
@@ -180,15 +216,16 @@ export const AddUsers = () => {
             <button
               type="button"
               className="rounded-md bg-white py-2 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              onClick={() => {navigate(-1)}}
             >
               Cancel
             </button>
             <button
               type="button"
-              onClick={handleAddUser}
+              onClick={handleEditUser}
               className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Add
+              Edit
             </button>
           </div>
         </div>
