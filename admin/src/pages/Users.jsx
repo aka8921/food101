@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import {Link} from 'react-router-dom'
+import jwt_decode from "jwt-decode";
   
  export const Users = () => {
-
+  const token = localStorage.getItem('token')
+  const decodedToken = jwt_decode(token);
   const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -119,18 +121,20 @@ const handleDelete = async (id) => {
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.mealCard}</td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.userType}</td>
                         <td className="relative flex gap-8 items-center justify-end whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        { <div onClick={() => handleDelete(user._id)} className=" cursor-pointer text-red-600 hover:text-red-900">
+                        {  decodedToken.username !== user.username  && <div onClick={() => handleDelete(user._id)} className=" cursor-pointer text-red-600 hover:text-red-900">
                             Delete
                           </div>}
-                          <Link to={`/users/${user.username}/edit`} onClick={() => handleEditClick(user)}>
+                          {decodedToken.username !== user.username  && <Link to={`/users/${user.username}/edit`} onClick={() => handleEditClick(user)}>
                             <div className="text-indigo-600 hover:text-indigo-900">
                               Edit
                             </div>
-                          </Link>
+                          </Link>}
                           
-                          <a href="#" className="text-green-600 hover:text-green-900">
-                            Recharge
-                          </a>
+                          <Link to={`/users/${user.username}/recharge`} onClick={() => handleEditClick(user)}>
+                            <div className="text-green-600 hover:text-green-900">
+                              Recharge
+                            </div>
+                          </Link>
                         </td>
                       </tr>
                     ))}

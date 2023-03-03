@@ -182,8 +182,17 @@ app.put('/api/recharge', isLoggedIn, async (req, res) => {
     { $inc: { 'mealCard': rechargeAmount } }, 
     { new: true }
   )
-    .then(updatedUser => {
-      console.log(updatedUser);
+    .then(async updatedUser => {
+      try{
+        response = await Transactions.create({
+            user: updatedUser._id,
+            transactionAmount: rechargeAmount
+        })
+        console.log("Order Added successfully: ",response)
+      }
+      catch(error){
+        throw error
+      }
       res.json({status: "ok"})
     })
     .catch(error => {
@@ -239,24 +248,24 @@ app.delete('/api/order', isLoggedIn, async (req, res)=>{
     });
 })
 
-app.post('/api/transaction', isLoggedIn, async (req, res) => {
-  const {transactionAmount} = req.body
+// app.post('/api/transaction', isLoggedIn, async (req, res) => {
+//   const {transactionAmount} = req.body
 
-  try{
-    response = await Transactions.create({
-        user: req.userId,
-        transactionAmount
-    })
-    console.log("Order Added successfully: ",response)
-  }
-  catch(error){
-    if (error.code === 11000)
-        return res.json({status: "error", message: "Item already in use"})
-    throw error
-  } 
-  res.json({status: "ok"})
+//   try{
+//     response = await Transactions.create({
+//         user: req.userId,
+//         transactionAmount
+//     })
+//     console.log("Order Added successfully: ",response)
+//   }
+//   catch(error){
+//     if (error.code === 11000)
+//         return res.json({status: "error", message: "Item already in use"})
+//     throw error
+//   } 
+//   res.json({status: "ok"})
 
-})
+// })
 
 app.get('/api/transaction', isLoggedIn, async (req, res)=>{
   const userId = req.userId;
@@ -404,7 +413,7 @@ app.post('/api/admin/user', isLoggedIn, roleCheckAdmin, (req, res) => {
     });
 })
 
-app.put('/api/admin/edit/:username', isLoggedIn, roleCheckAdmin, async (req, res) => {
+app.put('/api/admin/user/edit/:username', isLoggedIn, roleCheckAdmin, async (req, res) => {
   const username = req.params.username;
   const { firstName, lastName, password, userType, newUsername } = req.body;
 
@@ -431,6 +440,35 @@ app.put('/api/admin/edit/:username', isLoggedIn, roleCheckAdmin, async (req, res
     console.log(err);
     return res.status(500).json({ error: err });
   }
+})
+
+app.put('/api/admin/user/recharge/:username', isLoggedIn, roleCheckAdmin, async (req, res) => {
+  const {rechargeAmount} = req.body
+  const username = req.params.username;
+
+  User.findOneAndUpdate(
+    { username }, 
+    { $inc: { 'mealCard': rechargeAmount } }, 
+    { new: true }
+  )
+    .then(async updatedUser => {
+      console.log(updatedUser);
+      try{
+        response = await Transactions.create({
+            user: updatedUser._id,
+            transactionAmount: rechargeAmount
+        })
+        console.log("Order Added successfully: ",response)
+      }
+      catch(error){
+        throw error
+      }
+      res.json({status: "ok"})
+    })
+    .catch(error => {
+      console.error(error);
+      res.json({status: "error"})
+    });
 })
 
 
