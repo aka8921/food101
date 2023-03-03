@@ -53,7 +53,7 @@ function roleCheckAdmin(req, res, next) {
 
 function roleCheckcanteen(req, res, next) {
   
-  if (req.userType !== "admin" || req.userType !== "canteen-staff") {
+  if (req.userType !== "admin" && req.userType !== "canteen-staff") {
     return res.status(401).json({ message: 'This feature is only accessible by Admins and Canteen staff' });
   }
   next();
@@ -61,7 +61,7 @@ function roleCheckcanteen(req, res, next) {
 
 function roleCheckKitchen(req, res, next) {
   
-  if (req.userType !== "admin" || req.userType !== "canteen-staff" || req.userType !== "kitchen-staff") {
+  if (req.userType !== "admin" && req.userType !== "canteen-staff" && req.userType !== "kitchen-staff") {
     return res.status(401).json({ message: 'This feature is only accessible by Admins, Canteen and Kitchen staff' });
   }
   next();
@@ -106,25 +106,6 @@ app.post('/api/sign-in', async (req, res) => {
 
     res.send({status: "ok"})
   })
-
-app.post('/api/menu', async (req, res)=>{
-  const {name, imageUrl, price, profit} = req.body
-  try{
-    response = await Menu.create({
-        name,
-        imageUrl,
-        price,
-        profit
-    })
-    console.log("Item Added successfully: ",response)
-  }
-  catch(error){
-    if (error.code === 11000)
-        return res.json({status: "error", message: "Item already in use"})
-    throw error
-  } 
-  res.json({status: "ok"})
-})
 
 app.get('/api/menu', isLoggedIn, async (req, res)=>{
   Menu.find({}, (err, data) => {
@@ -247,25 +228,6 @@ app.delete('/api/order', isLoggedIn, async (req, res)=>{
       res.status(500).json({ error: err });
     });
 })
-
-// app.post('/api/transaction', isLoggedIn, async (req, res) => {
-//   const {transactionAmount} = req.body
-
-//   try{
-//     response = await Transactions.create({
-//         user: req.userId,
-//         transactionAmount
-//     })
-//     console.log("Order Added successfully: ",response)
-//   }
-//   catch(error){
-//     if (error.code === 11000)
-//         return res.json({status: "error", message: "Item already in use"})
-//     throw error
-//   } 
-//   res.json({status: "ok"})
-
-// })
 
 app.get('/api/transaction', isLoggedIn, async (req, res)=>{
   const userId = req.userId;
@@ -471,6 +433,84 @@ app.put('/api/admin/user/recharge/:username', isLoggedIn, roleCheckAdmin, async 
     });
 })
 
+// Menu
+
+app.get('/api/admin/menu/:id', isLoggedIn, roleCheckKitchen, (req, res) => {
+  // If the middleware is successful, the user ID will be available on the request object
+  const id = req.params.id
+  
+  Menu.findById(id, (err, item) => {
+    if (err) {
+      // Handle the error
+      console.error(err);
+      return;
+    }
+  
+    if (!item) {
+      // Handle the case where the user is not found
+      console.error(`Item with ID ${id} not found.`);
+      return;
+    }
+    res.status(200).json({ item: item });
+    });
+})
+
+app.delete('/api/admin/menu', isLoggedIn, roleCheckKitchen, async (req, res)=>{
+  const {itemId} = req.body
+  console.log("Delete", itemId)
+  Menu.findByIdAndDelete(itemId)
+    .then(item => {
+      if (item) {
+        res.status(200).json({ status: "ok", message: `Order with _id ${itemId} deleted`, item });
+      } else {
+        res.status(404).json({ message: `Item with id ${itemId} not found` });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+})
+
+app.put('/api/admin/menu/edit/:id', isLoggedIn, roleCheckKitchen, async (req, res) => {
+  const id = req.params.id;
+  const { name, price, profit, imageUrl } = req.body;
+
+  try {
+    const updatedFields = { name, price, profit, imageUrl };
+    const updatedItem = await Menu.findOneAndUpdate({ _id:id }, updatedFields, { new: true });
+    if (updatedItem) {
+      console.log("UpdatedID", updatedItem._id)
+      console.log("ParamID", id)
+      return res.status(200).json({ message: `Item ${id} updated successfully`, item: updatedItem, status: "ok" });
+    } else {
+      return res.status(404).json({ message: `Item ${id} not found` });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: err });
+  }
+})
+
+
+app.post('/api/admin/menu', isLoggedIn, roleCheckKitchen, async (req, res)=>{
+  const {name, imageUrl, price, profit} = req.body
+  try{
+    response = await Menu.create({
+        name,
+        imageUrl,
+        price,
+        profit
+    })
+    console.log("Item Added successfully: ",response)
+  }
+  catch(error){
+    if (error.code === 11000)
+        return res.json({status: "error", message: "Item already in use"})
+    throw error
+  } 
+  res.json({status: "ok"})
+})
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)

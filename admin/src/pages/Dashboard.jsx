@@ -1,15 +1,19 @@
 import { BoltIcon, ChartBarIcon, CurrencyRupeeIcon, UsersIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline'
 import { Route, Routes } from 'react-router-dom';
-import {Users} from './Users'
-import {Menu} from './Menu'
 import {Orders} from './Orders'
 import {Transactions} from './Transactions'
 import { NotFound } from './NotFound';
 import Logo from '../assets/logo.png'
 import { Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
-import { AddUser } from './AddUser';
-import { EditUser } from './EditUser';
-import { RechargeUser } from './RechargeUser';
+// USER
+import {Users} from './user/Users'
+import { AddUser } from './user/AddUser';
+import { EditUser } from './user/EditUser';
+import { RechargeUser } from './user/RechargeUser';
+// Menu
+import {Menu} from './menu/Menu'
+import { AddMenu } from './menu/AddMenu';
+import { EditMenu } from './menu/EditMenu';
 import jwt_decode from "jwt-decode";
 
 
@@ -95,11 +99,16 @@ export const Dashboard = () => {
     <div className="flex-1 h-screen overflow-y-scroll">
       <Routes>
           <Route exact path="/" element={<Navigate to="/users" replace />} />
+          {/* USER */}
           <Route exact path="/users" element={<Users />} />
           <Route exact path="/users/add" element={<AddUser />} />
           <Route path="/users/:id/edit" element={<EditUser />} />
           <Route path="/users/:id/recharge" element={<RechargeUser />} />
+          {/* MENU */}
           <Route exact path="/menu" element={<Menu />} />
+          <Route exact path="/menu/add" element={<AddMenu />} />
+          <Route path="/menu/:id/edit" element={<EditMenu />} />
+
           <Route exact path="/orders" element={<Orders />} />
           <Route exact path="/transactions" element={<Transactions />} />
           <Route path="*" element={<NotFound />} />
