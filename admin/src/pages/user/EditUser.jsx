@@ -8,7 +8,7 @@ export const EditUser = () => {
 
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
-    const [username, setUsername] = useState("")
+    // const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [mealCard, setMealCard] = useState(0)
     const [role, setRole] = useState("day-scholar")
@@ -41,7 +41,7 @@ export const EditUser = () => {
       .then(data => {
         setFirstName(data.user.firstName || "")
         setLastName(data.user.lastName || "")
-        setUsername(data.user.username || "")
+        // setUsername(data.user.username || "")
         setRole(data.user.userType || "")
       })
       .catch(error => {
@@ -52,7 +52,7 @@ export const EditUser = () => {
     const handleEditUser = async () => {
       const jwt_token = localStorage.getItem('token')
       const userObject = {
-        newUsername: username,
+        // newUsername: username,
         firstName,
         lastName,
         mealCard,
@@ -85,7 +85,7 @@ export const EditUser = () => {
                 <div onClick={() => {navigate(-1)}} className="flex py-2 items-center text-sm text-gray-400 hover:text-gray-900 cursor-pointer justify-center gap-2"><div className="w-4"><ArrowLeftIcon /></div> Go Back</div>                
               <div className='flex gap-2'><h3 className="text-[30px] font-semibold leading-6 text-gray-900">Edit User</h3> <div className='flex py-2 items-center text-sm text-gray-400 hover:text-gray-900 cursor-pointer justify-center gap-2'>@{id}</div></div>
               <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                The user might need to log-in again if there is any changes in username / password
+                The user might need to log-in again if there is any changes in password
               </p>
             </div>
 
@@ -128,7 +128,7 @@ export const EditUser = () => {
                 </div>
               </div>
   
-              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+              {/* <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
                   Username
                 </label>
@@ -144,7 +144,7 @@ export const EditUser = () => {
                     className="block w-full max-w-lg rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                 <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">

@@ -16,7 +16,8 @@ export const Recharge = () => {
               'Authorization': `Bearer ${jwt_token}`,
             },
             body: JSON.stringify({
-              rechargeAmount: Number(rechargeAmount)
+              rechargeAmount: Number(rechargeAmount),
+              transactionMethod: "meal-card"
             })
           })
             .then(response => response.json())

@@ -156,7 +156,7 @@ app.get('/api/user', isLoggedIn, (req, res) => {
 app.put('/api/recharge', isLoggedIn, async (req, res) => {
   const userId = req.userId;
   const username = req.username;
-  const rechargeAmount = req.body.rechargeAmount
+  const {rechargeAmount, transactionMethod} = req.body
 
   User.findOneAndUpdate(
     { username }, 
@@ -166,8 +166,11 @@ app.put('/api/recharge', isLoggedIn, async (req, res) => {
     .then(async updatedUser => {
       try{
         response = await Transactions.create({
-            user: updatedUser._id,
-            transactionAmount: rechargeAmount
+            user: userId, 
+            username: username,
+            transactionAmount: rechargeAmount,
+            transactionMethod: transactionMethod,
+            tag: "Recharge | User"
         })
         console.log("Order Added successfully: ",response)
       }
@@ -380,12 +383,17 @@ app.put('/api/admin/user/edit/:username', isLoggedIn, roleCheckAdmin, async (req
   const { firstName, lastName, password, userType, newUsername } = req.body;
 
   try {
-    const existingUser = await User.findOne({ username: newUsername }); // check if newUsername already exists in the database
-    if (existingUser && existingUser.username !== username) {
-      return res.status(400).json({ message: `Username ${newUsername} already exists` });
-    }
+    // const existingUser = await User.findOne({ username: newUsername }); // check if newUsername already exists in the database
+    // if (existingUser && existingUser.username !== username) {
+    //   return res.status(400).json({ message: `Username ${newUsername} already exists` });
+    // }
   
-    const updatedFields = { firstName, lastName, userType, username: newUsername };
+    const updatedFields = { 
+      firstName, 
+      lastName, 
+      userType, 
+      // username: newUsername 
+    };
     if (password) { // if password is provided, encrypt it before updating
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -405,7 +413,7 @@ app.put('/api/admin/user/edit/:username', isLoggedIn, roleCheckAdmin, async (req
 })
 
 app.put('/api/admin/user/recharge/:username', isLoggedIn, roleCheckAdmin, async (req, res) => {
-  const {rechargeAmount} = req.body
+  const {rechargeAmount, transactionMethod} = req.body
   const username = req.params.username;
 
   User.findOneAndUpdate(
@@ -418,7 +426,10 @@ app.put('/api/admin/user/recharge/:username', isLoggedIn, roleCheckAdmin, async 
       try{
         response = await Transactions.create({
             user: updatedUser._id,
-            transactionAmount: rechargeAmount
+            username: username,
+            transactionAmount: rechargeAmount,
+            transactionMethod: transactionMethod,
+            tag: "Recharge | Admin"
         })
         console.log("Order Added successfully: ",response)
       }
@@ -510,6 +521,17 @@ app.post('/api/admin/menu', isLoggedIn, roleCheckKitchen, async (req, res)=>{
     throw error
   } 
   res.json({status: "ok"})
+})
+
+app.get('/api/admin/transactions', isLoggedIn, roleCheckAdmin, async (req, res)=>{
+  Transactions.find({}, (err, transactions) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving data');
+    } else {
+      res.json({transactions: transactions});
+    }
+  });
 })
 
 app.listen(PORT, () => {

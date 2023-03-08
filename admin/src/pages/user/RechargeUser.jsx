@@ -56,6 +56,7 @@ export const RechargeUser = () => {
       const jwt_token = localStorage.getItem('token')
       const body = {
         rechargeAmount,
+        transactionMethod: "meal-card"
       }
 
       const response = await fetch(`http://localhost:3000/api/admin/user/recharge/${id}`, {

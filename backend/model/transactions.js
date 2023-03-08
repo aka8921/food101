@@ -7,6 +7,10 @@ const transactionSchema = new mongoose.Schema({
         ref: "User",
         required: true
       },
+    username: {
+        type: String, 
+        required: true , 
+    },
     transactionAmount: {
         type: Number, 
         required: true ,
@@ -15,7 +19,17 @@ const transactionSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    } 
+    },
+    tag: {
+        type: String, 
+        required: false ,
+        default: "Unknown"
+    },
+    transactionMethod: {
+        type: String, 
+        required: true , 
+        enum: ['cash', 'meal-card']
+    },
     },
     {collection: "transactions"}
 )

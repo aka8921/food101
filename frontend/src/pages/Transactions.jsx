@@ -38,6 +38,11 @@ export const Transactions = () => {
         fetchTransactions()
     }, [])
 
+    const transactionMethodTransformer = {
+      "meal-card" : "MealCard",
+      "cash": "Cash"
+    }
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
 
@@ -78,7 +83,11 @@ export const Transactions = () => {
         const color = transaction.transactionAmount > 0 ? "text-green-600" : "text-red-600";
         return (
             <div className="flex items-center justify-between odd:bg-gray-100 px-6 py-1" key={i}>
+              <div className="flex-flex-col items-start justify-center">
+                <div className="text-[10px] text-slate-500">{transactionMethodTransformer[transaction.transactionMethod] || "--"}</div>
                 <div className="text-md text-slate-500">{formatDate(transaction.createdAt)}</div>
+              </div>
+                
                 <div className={`text-lg font-regular text-green ${color}`}>{(transaction.transactionAmount > 0 ? "+" : "")+transaction.transactionAmount} ₹</div>
             </div>)
     })
