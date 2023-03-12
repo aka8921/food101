@@ -202,6 +202,7 @@ app.post('/api/order', isLoggedIn, async (req, res)=>{
   try{
     response = await Orders.create({
         user: req.userId,
+        username: req.username,
         items,
         total
     })
@@ -533,6 +534,85 @@ app.get('/api/admin/transactions', isLoggedIn, roleCheckAdmin, async (req, res)=
     }
   });
 })
+
+app.get('/api/admin/orders', isLoggedIn, roleCheckcanteen, async (req, res)=>{
+  console.log("order get")
+  Orders.find({}, (err, orders) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving data');
+    } else {
+      res.json({orders: orders});
+    }
+  });
+})
+
+app.put('/api/admin/orders/:id', isLoggedIn, roleCheckcanteen, async (req, res)=>{
+  const orderId = req.params.id;
+  const method = req.body.method
+  console.log("order approve", req.body)
+  Orders.findById(orderId, (err, order) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else if (!order) {
+      res.status(404).json({ error: `Order with id ${orderId} not found` });
+    } else {
+      // Update the order status to 'card'
+      order.method = method;
+      order.status = "approved";
+      order.save((err, updatedOrder) => {
+        if (err) {
+          console.log(err);
+          res.status(500).json({ error: 'Internal server error' });
+        } else {
+          
+          // Find the corresponding user by userId and update the mealcard
+          User.findById(updatedOrder.user, (err, user) => {
+            if (err) {
+              console.log(err);
+              res.status(500).json({ error: 'Internal server error' });
+            } else {
+              user.mealCard -= updatedOrder.total;
+              user.save((err, updatedUser) => {
+                if (err) {
+                  console.log(err);
+                  res.status(500).json({ error: 'Internal server error' });
+                } else {
+                  res.json({ message: `Order ${updatedOrder._id} updated and user ${updatedUser._id} mealcard updated to ${updatedUser.mealCard}` });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+})
+
+app.delete('/api/admin/orders/:id',isLoggedIn, roleCheckcanteen, (req, res) => {
+  console.log("order delete")
+  const orderId = req.params.id;
+  Orders.findById(orderId, (err, order) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else if (!order) {
+      res.status(404).json({ error: `Order with id ${orderId} not found` });
+    } else {
+      // Soft delete the order by changing its status to 'cancelled'
+      order.status = 'cancelled';
+      order.save((err, updatedOrder) => {
+        if (err) {
+          console.log(err);
+          res.status(500).json({ error: 'Internal server error' });
+        } else {
+          res.json({ message: `Order ${updatedOrder._id} cancelled` });
+        }
+      });
+    }
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)

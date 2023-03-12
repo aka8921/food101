@@ -1,7 +1,7 @@
 import { BoltIcon, ChartBarIcon, CurrencyRupeeIcon, UsersIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline'
 import { Route, Routes } from 'react-router-dom';
-import {Orders} from './Orders'
-import {Transactions} from './transaction/Transactions'
+import {Orders} from './orders/Orders'
+import {Transactions} from './transactions/Transactions'
 import { NotFound } from './NotFound';
 import Logo from '../assets/logo.png'
 import { Link, useLocation, useNavigate, Navigate } from 'react-router-dom';

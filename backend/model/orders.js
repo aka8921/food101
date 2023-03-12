@@ -7,6 +7,10 @@ const OrderSchema = new mongoose.Schema({
           ref: "User",
           required: true
         },
+        username: {
+          type: String, 
+          required: true , 
+      },
         items: [
           {
             item: {
@@ -36,10 +40,18 @@ const OrderSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         },
-        completed: {
-          type: Boolean,
-          default: false
-        }
+        status: {
+          type: String, 
+          required: true , 
+          enum: ['pending', 'cancelled', 'approved'],
+          default: 'pending'
+      },
+        method: {
+          type: String, 
+          required: true , 
+          enum: ['cash', 'meal-card', 'pending'],
+          default: 'pending'
+      },
     },
     {collection: "orders"}
 )
