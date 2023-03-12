@@ -197,6 +197,18 @@ app.get('/api/order', isLoggedIn, async (req, res)=>{
   });
 })
 
+app.get('/api/order/pending', isLoggedIn, async (req, res)=>{
+  const userId = req.userId;
+  Orders.find({user: userId, status: "pending"}, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving data');
+    } else {
+      res.json(data);
+    }
+  });
+})
+
 app.post('/api/order', isLoggedIn, async (req, res)=>{
   const {items, total} = req.body
   try{
@@ -573,13 +585,28 @@ app.put('/api/admin/orders/:id', isLoggedIn, roleCheckcanteen, async (req, res)=
               console.log(err);
               res.status(500).json({ error: 'Internal server error' });
             } else {
-              user.mealCard -= updatedOrder.total;
+              if(method==="meal-card") user.mealCard -= updatedOrder.total;
               user.save((err, updatedUser) => {
                 if (err) {
                   console.log(err);
                   res.status(500).json({ error: 'Internal server error' });
                 } else {
-                  res.json({ message: `Order ${updatedOrder._id} updated and user ${updatedUser._id} mealcard updated to ${updatedUser.mealCard}` });
+                  const transaction = new Transactions({
+                    user: order.user,
+                    username: order.username,
+                    transactionAmount: -order.total,
+                    tag: 'Order Payment',
+                    transactionMethod: method
+                  });
+                  transaction.save((err) => {
+                    if (err) {
+                      console.error(err);
+                      // handle the error appropriately
+                    } else {
+                      console.log('Order update and user update successful, and new transaction record created.');
+                      res.json({ message: `Order ${updatedOrder._id} approved` });
+                    }
+                  });
                 }
               });
             }

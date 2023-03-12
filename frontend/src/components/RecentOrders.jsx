@@ -1,6 +1,9 @@
 export const RecentOrders = ({orders, fetchOrders}) => {
+    const now = new Date();
+    const hours = now.getHours();
+    const shouldRender = hours >= 0 && hours < 11;
 
-    const handleCancel = async (id) => {
+    const handleDelete = async (id) => {
             const jwt_token = localStorage.getItem('token')
             console.log("fuction: fetchUserDetails")
             console.log("token: ", jwt_token)
@@ -45,17 +48,17 @@ export const RecentOrders = ({orders, fetchOrders}) => {
                    {orderedItems} 
                 </div>
                 
-                <div className="ml-auto bg-red-100 px-3 py-1 rounded-full font-semibold cursor-pointer text-sm text-red-600 mb-1"
-                onClick={() => handleCancel(order._id)}
+                {shouldRender && <div className="ml-auto bg-red-100 px-3 py-1 rounded-full font-semibold cursor-pointer text-sm text-red-600 mb-1"
+                onClick={() => handleDelete(order._id)}
                 >
-                    Cancel
-                </div>
+                    Delete
+                </div>}
             </div>
         )
     })
     return (
     <div className="flex flex-col my-2">
-        <div className="font-bold text-lg mb-3">Recent Bookings</div>
+        <div className="font-bold text-lg mb-3">Pending Orders</div>
         <div className="flex flex-col gap-5">
         {bookingItems}
         </div>

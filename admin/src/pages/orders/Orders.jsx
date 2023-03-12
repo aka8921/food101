@@ -114,12 +114,13 @@ const cancelOrder = (orderId) => {
           </div>
           <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
             <Link to={"/users/add"}>
-            <button
+            {/* <button
               type="button"
               className="block rounded-md bg-red-600 py-2 px-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+              onClick={() => {deleteAll()}}
             >
-              Cancel All Pending Orders
-            </button>
+              Delete All Orders
+            </button> */}
             </Link>
           </div>
         </div>
@@ -155,7 +156,7 @@ const cancelOrder = (orderId) => {
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
                     {orders.slice(0).reverse().map((order) => (
-                      <tr key={order.username}>
+                      <tr key={order._id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         @{order.username}
                         </td>
@@ -170,7 +171,7 @@ const cancelOrder = (orderId) => {
                         }
                         </td>
                         
-                        <td className={`whitespace-nowrap px-3 py-4 text-sm text-gray-500 ${order.total > 0 ? "text-green-600" : "text-red-600"}`}>{(order.totla > 0 ? "+" : "")+order.total} ₹</td>
+                        <td className={`whitespace-nowrap px-3 py-4 text-sm text-gray-500 ${order.status == "cancelled" ? "text-red-600" : ""} ${order.status == "pending" ? "text-yellow-400" : ""} ${order.status == "approved" ? "text-green-600" : ""}`}>{order.total} ₹</td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{order.status || "Unknown"}</td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{order.method || "Unknown"}</td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

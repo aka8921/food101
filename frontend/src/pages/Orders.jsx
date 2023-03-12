@@ -33,19 +33,23 @@ export const Orders = () => {
           });
     }
 
-    const orderList = orders.map((order, key) => {
+    const orderList = orders.slice(0).reverse().map((order, key) => {
         const orderItems = order.items.map((dish, key) => {
             return(
                 <div className="text-xs text-slate-500" key={key}>{dish.name} {dish.quantity > 1 ? `(${dish.quantity})`: ""}</div>
             )
         })
         return(
-            <div className="flex justify-between items-center px-6 py-2 odd:bg-gray-100" key={key}>
+            <div className={`flex justify-between items-center px-6 py-2 odd:bg-gray-100 ${order.status != "pending" ? "opacity-50" : ""}`} key={key}>
                         <div className="flex flex-col items-start gap-1">
+                        <div className={`text-[10px] font-bold ${order.status == "cancelled" ? "text-red-600" : ""} ${order.status == "pending" ? "text-yellow-400" : ""} ${order.status == "approved" ? "text-green-600" : ""}`}>
+                          {order.status}
+                        </div>
                             {orderItems}
                         </div>
+                        
                         <div className='flex gap-1'>
-                             <div className="text-green-500 font-bold">₹{order.total}</div>
+                             <div className={`font-bold ${order.status == "cancelled" ? "text-red-600" : ""} ${order.status == "pending" ? "text-yellow-400" : ""} ${order.status == "approved" ? "text-green-600" : ""}`}>₹{order.total}</div>
                         </div>
                     </div>
         )

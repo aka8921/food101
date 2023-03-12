@@ -86,7 +86,7 @@ import jwt_decode from "jwt-decode";
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
                     {transactions.slice(0).reverse().map((transaction) => (
-                      <tr key={transaction.username}>
+                      <tr key={transaction._id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         @{transaction.username}
                         </td>

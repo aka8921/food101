@@ -94,7 +94,7 @@ export const Home = () => {
       console.log("fuction: fetchUserDetails")
       console.log("token: ", jwt_token)
 
-      fetch('http://localhost:3000/api/order', {
+      fetch('http://localhost:3000/api/order/pending', {
           headers: {
             'Authorization': `Bearer ${jwt_token}`,
             'Content-Type': 'application/json'
